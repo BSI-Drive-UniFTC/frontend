@@ -28,9 +28,9 @@ const schema = yup.object().shape({
     nmNomeCad: yup.string().required("Você deve inserir seu nome"),
     codUsuarioCad: yup
         .number()
-        .typeError("Informe o numero do seu CPF")
-        .required("Você deve inserir seu CPF")
-        .min(10, "O CPF deve conter 11 digitos"),
+        .typeError("Informe o numero de matricula")
+        .required("Você deve inserir seu numero de matricula")
+        .min(10, "A matricula deve conter 11 digitos"),
     dsEmailCad: yup.string().email("Seu email deve ser valido").required("Você deve inserir um email"),
     dsSenhaCad: yup
         .string()
@@ -93,7 +93,7 @@ function SignUp() {
         } catch (err) {
             if (err.response.status === 401) {
                 toast.error(
-                    "Erro ao cadastrar, o CPF digitado possui um valor inválido ou já está cadastrado no banco de dados.",
+                    "Erro ao cadastrar, o numero de matricula digitado possui um valor inválido ou já está cadastrado no banco de dados.",
                     {
                         position: "top-right",
                         autoClose: 4500,
@@ -136,9 +136,9 @@ function SignUp() {
 
     return (
         <div className="flex justify-center items-center bg-grey-50">
-            <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 p-48">
-                <div className="w-full flex flex-col justify-center items-center my-10">
-                    <img className=" w-500 items-center justify-center" src={logo} alt="logo" />
+            <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 p-28">
+                <div className="w-500 h-92 flex flex-col justify-center items-center my-10">
+                    <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
                 <Paper
                     variant="outlined"
@@ -146,15 +146,10 @@ function SignUp() {
                     className="w-full sm:w-auto min-h-full sm:min-h-auto py-24 px-16 sm:px-32 sm:shadow"
                 >
                     <div className="w-full max-w-320 sm:w-320 mx-auto sm:mx-0">
-                        <Typography className=" text-2xl font-extrabold tracking-tight leading-tight">
-                            Cadastro
+                        <Typography className="text-2xl text-center font-extrabold tracking-tight leading-tight">
+                            Criar uma nova conta
                         </Typography>
-                        <div className="flex items-baseline mt-2 font-medium">
-                            <Typography>Já está cadastrado?</Typography>
-                            <Link className="ml-4 text-red-900" to="/">
-                                Sign in
-                            </Link>
-                        </div>
+
 
                         <form
                             name="registerForm"
@@ -188,7 +183,7 @@ function SignUp() {
                                         <TextField
                                             {...field}
                                             className="w-3/5 mb-24 mr-5 h-36"
-                                            label="CPF"
+                                            label="Número de matricula"
                                             type="text"
                                             error={!!errors.codUsuarioCad}
                                             helperText={errors?.codUsuarioCad?.message}
@@ -210,8 +205,8 @@ function SignUp() {
                                             variant="outlined"
                                             fullWidth
                                         >
-                                            <MenuItem value="1">Nutricionista</MenuItem>
-                                            <MenuItem value="2">Fiscal</MenuItem>
+                                            <MenuItem value="1">Aluno</MenuItem>
+                                            <MenuItem value="2">Professor</MenuItem>
                                         </Select>
                                     )}
                                 />
@@ -277,7 +272,7 @@ function SignUp() {
                                     <FormControl className="items-center" error={!!errors.ieTermoCad}>
                                         <FormControlLabel
                                             label="Aceito o Contrato do Usuário, 
-                                            a Política de Privacidade e a Política de Cookies do Pratica Alimentos."
+                                            a Política de Privacidade e a Política de Cookies da BSI Drive."
                                             control={<Checkbox size="small" {...field} />}
                                         />
                                         <FormHelperText>{errors?.ieTermoCad?.message}</FormHelperText>
@@ -288,7 +283,7 @@ function SignUp() {
                             <Button
                                 variant="contained"
                                 color="secondary"
-                                className=" w-full mt-24 bg-red-900"
+                                className=" w-full my-16 bg-primary"
                                 aria-label="Register"
                                 disabled={fetchingRegistration}
                                 type="submit"
@@ -296,6 +291,13 @@ function SignUp() {
                             >
                                 FINALIZAR CADASTRO
                             </Button>
+
+                            <div className="flex justify-center items-baseline mt-2 font-medium">
+                                <Typography>Já está cadastrado?</Typography>
+                                <Link className="ml-4 text-primary" to="/">
+                                    Sign in
+                                </Link>
+                            </div>
                         </form>
                     </div>
                 </Paper>

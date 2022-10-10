@@ -103,8 +103,8 @@ function ResetPassword() {
     return (
         <div className=" h-screen flex justify-center items-center bg-gray-50">
             <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 mx-20">
-                <div className="w-full flex flex-col justify-center items-center my-10">
-                    <img className=" w-500 items-center justify-center" src={logo} alt="logo" />
+                <div className="w-500 h-92 flex flex-col justify-center items-center my-10">
+                    <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
 
                 <Paper

@@ -58,19 +58,19 @@ function ClassicForgotPasswordPage() {
     return (
         <div className=" h-screen flex justify-center items-center bg-grey-50">
             <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0">
-                <div className="w-full flex flex-col justify-center items-center my-16 ">
-                    <img className=" w-500 items-center justify-center" src={logo} alt="logo" />
+                <div className="w-500 h-92 flex flex-col justify-center items-center my-16 ">
+                    <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
                 <Paper
                     variant="outlined"
                     square
                     className="w-full sm:w-auto min-h-full sm:min-h-auto py-10 px-16 sm:p-24 sm:shadow"
                 >
-                    <Typography className="text-xl font-extrabold tracking-tight leading-tight">
+                    <Typography className="text-xl text-center font-extrabold tracking-tight leading-tight">
                         Esqueceu a Senha?
                     </Typography>
-                    <div className="flex items-baseline mt-2 font-medium">
-                        <Typography>Redefina a senha em duas etapas rapidas</Typography>
+                    <div className="flex justify-center text-center items-baseline mt-2 font-medium">
+                        <Typography>Para redefinir sua senha informe seu email!</Typography>
                     </div>
                     <div className="w-full max-w-320 sm:w-320 mx-auto sm:mx-0">
                         <form
@@ -101,7 +101,7 @@ function ClassicForgotPasswordPage() {
                                 variant="contained"
                                 color="error"
                                 margin="normal"
-                                className=" w-full my-10 bg-red-900"
+                                className=" w-full my-10 bg-primary"
                                 aria-label="Register"
                                 type="submit"
                                 size="large"
@@ -109,9 +109,9 @@ function ClassicForgotPasswordPage() {
                                 Envie o Link para redefinir a senha
                             </Button>
 
-                            <Typography className="mt-16 text-sm font-small" color="text.secondary">
+                            <Typography className="mt-16 text-center text-sm font-small" color="text.secondary">
                                 <span>Volte para a tela de</span>
-                                <Link className="ml-4 text-red-900" to="/">
+                                <Link className="ml-4 text-primary" to="/">
                                     Sign In
                                 </Link>
                             </Typography>

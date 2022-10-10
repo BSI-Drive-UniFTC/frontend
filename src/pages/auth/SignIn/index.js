@@ -96,8 +96,8 @@ function SignIn() {
     return (
         <div className=" h-screen flex justify-center items-center bg-gray-50">
             <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 mx-20">
-                <div className="w-full flex flex-col justify-center items-center my-10">
-                    <img className=" w-500 items-center justify-center" src={logo} alt="logo" />
+                <div className="w-500 h-92 flex flex-col justify-center items-center my-10">
+                    <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
 
                 <Paper
@@ -137,7 +137,7 @@ function SignIn() {
                                 render={({ field }) => (
                                     <TextField
                                         {...field}
-                                        className=" mb-24"
+                                        className=" mb-16"
                                         label="Senha"
                                         type="password"
                                         error={!!errors.dsSenhaLogin}
@@ -148,10 +148,16 @@ function SignIn() {
                                 )}
                             />
 
+                            <div className="flex flex-col sm:flex-row items-center justify-end sm:justify-end mb-20 ">
+                                <Link className="text-10 font-small text-primary no-underline hover:underline" to="/ForgotPassword">
+                                    Esqueceu a senha?
+                                </Link>
+                            </div>
+
                             <Button
                                 variant="contained"
                                 color="error"
-                                className=" w-full bg-red-900"
+                                className=" w-full bg-primary"
                                 aria-label="Sign in"
                                 type="submit"
                                 size="large"
@@ -159,16 +165,13 @@ function SignIn() {
                                 Entrar
                             </Button>
 
-                            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between mt-24 ">
+                            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-center mt-20 ">
                                 <div className="flex items-center font-small">
-                                    <Typography>Não tem conta?</Typography>
-                                    <Link className="ml-4 text-red-900" to="/SignUp">
+                                    <Typography>Ainda não tem uma conta?</Typography>
+                                    <Link className="ml-4 text-primary no-underline hover:underline" to="/SignUp">
                                         Cadastre-se
                                     </Link>
                                 </div>
-                                <Link className=" text-10 font-small text-red-900" to="/ForgotPassword">
-                                    Esqueceu a senha?
-                                </Link>
                             </div>
                         </form>
                     </div>
