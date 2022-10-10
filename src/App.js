@@ -1,15 +1,14 @@
-
+import Routes from "routes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 
 function App() {
-  return (
-    <div >
-      <header >
-        <p>
-          Teste
-        </p>
-      </header>
-    </div>
-  );
+    return (
+        <>
+            <Routes />
+            <ToastContainer theme="colored" />
+        </>
+    );
 }
 
 export default App;
