@@ -22,20 +22,20 @@ export function AuthProvider({ children }) {
         setLoading(false);
     }, []);
 
-    const login = ({ dsEmailLogin, dsSenhaLogin }) => {
-        console.log("login auth", { dsEmailLogin, dsSenhaLogin })
+    const login = ({ emailLogin, passwordLogin }) => {
+        console.log("login auth", { emailLogin, passwordLogin })
 
-        if (dsSenhaLogin === "Teste123#") {
-            setUser(dsEmailLogin);
-            setUserName(dsEmailLogin);
+        if (passwordLogin === "Teste123#") {
+            setUser(emailLogin);
+            setUserName(emailLogin);
 
-            const { token } = dsEmailLogin;
-            localStorage.setItem("token", dsEmailLogin);
+            const { token } = emailLogin;
+            localStorage.setItem("token", emailLogin);
 
             navigate("/consultproject");
         }
 
-        // const loggedUser = userInfo.Email;
+        // const loggedUser = userInfo.emailLogin;
         // const userNameData = userInfo.Nome;
         // const { token } = userInfo;
 
