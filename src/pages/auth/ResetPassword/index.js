@@ -57,20 +57,20 @@ function ResetPassword() {
 
     async function onSubmit({ verificationCode, newPassword, confirmPassword }) {
         try {
-
-            const response = await api.put("/resetPassword", { verificationCode, newPassword, confirmPassword });
-            if (response.status === 200) {
-                toast.success("Senha alterada com sucesso! ", {
-                    position: "top-right",
-                    autoClose: 4000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined
-                });
-                navigate("/");
-            }
+            console.log(verificationCode, newPassword, confirmPassword)
+            // const response = await api.put("/resetPassword", { verificationCode, newPassword, confirmPassword });
+            // if (response.status === 200) {
+            //     toast.success("Senha alterada com sucesso! ", {
+            //         position: "top-right",
+            //         autoClose: 4000,
+            //         hideProgressBar: true,
+            //         closeOnClick: true,
+            //         pauseOnHover: true,
+            //         draggable: true,
+            //         progress: undefined
+            //     });
+            //     navigate("/");
+            // }
         } catch (err) {
             console.error(err);
 

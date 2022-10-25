@@ -5,54 +5,66 @@ import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-	const navigate = useNavigate();
-	const [user, setUser] = useState(null);
-	const [userName, setUserName] = useState(null);
-	const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [userName, setUserName] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		const recoveredUser = localStorage.getItem("token");
-		const recovereduserName = localStorage.getItem("userNameData");
+    useEffect(() => {
+        const recoveredUser = localStorage.getItem("token");
+        const recovereduserName = localStorage.getItem("userNameData");
 
-		if (recoveredUser) {
-			setUser(recoveredUser);
-			setUserName(recovereduserName);
-		}
+        if (recoveredUser) {
+            setUser(recoveredUser);
+            setUserName(recovereduserName);
+        }
 
-		setLoading(false);
-	}, []);
+        setLoading(false);
+    }, []);
 
-	const login = userInfo => {
-		const loggedUser = userInfo.Email;
-		const userNameData = userInfo.Nome;
-		const { token } = userInfo;
+    const login = ({ dsEmailLogin, dsSenhaLogin }) => {
+        console.log("login auth", { dsEmailLogin, dsSenhaLogin })
 
-		localStorage.setItem("user", loggedUser);
-		localStorage.setItem("userNameData", userNameData);
-		localStorage.setItem("token", token);
+        if (dsSenhaLogin === "Teste123#") {
+            setUser(dsEmailLogin);
+            setUserName(dsEmailLogin);
 
-		setUser(loggedUser);
-		setUserName(userNameData);
-		navigate("/dashboard");
-	};
+            const { token } = dsEmailLogin;
+            localStorage.setItem("token", dsEmailLogin);
 
-	const logout = () => {
-		localStorage.removeItem("user");
-		localStorage.removeItem("userNameData");
-		localStorage.removeItem("token");
+            navigate("/consultproject");
+        }
 
-		api.defaults.headers.Authorization = null;
-		setUser(null);
-		navigate("/");
-	};
+        // const loggedUser = userInfo.Email;
+        // const userNameData = userInfo.Nome;
+        // const { token } = userInfo;
 
-	const token = localStorage.getItem("token");
+        // localStorage.setItem("user", loggedUser);
+        // localStorage.setItem("userNameData", userNameData);
+        // localStorage.setItem("token", token);
 
-	return (
-		<AuthContext.Provider value={(user, loading, { token, login, logout, userName })}>
-			{children}
-		</AuthContext.Provider>
-	);
+        // setUser(loggedUser);
+        // setUserName(userNameData);
+        // navigate("/dashboard");
+    };
+
+    const logout = () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("userNameData");
+        localStorage.removeItem("token");
+
+        api.defaults.headers.Authorization = null;
+        setUser(null);
+        navigate("/");
+    };
+
+    const token = localStorage.getItem("token");
+
+    return (
+        <AuthContext.Provider value={(user, loading, { token, login, logout, userName })}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export const getToken = () => localStorage.getItem("token");

@@ -21,40 +21,37 @@ import api from "services/api";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
-/**
- * Form Validation Schema
- */
 const schema = yup.object().shape({
-    nmNomeCad: yup.string().required("Você deve inserir seu nome"),
-    codUsuarioCad: yup
+    name: yup.string().required("Você deve inserir seu nome"),
+    userRegistration: yup
         .number()
         .typeError("Informe o numero de matricula")
         .required("Você deve inserir seu numero de matricula")
         .min(10, "A matricula deve conter 11 digitos"),
-    dsEmailCad: yup.string().email("Seu email deve ser valido").required("Você deve inserir um email"),
-    dsSenhaCad: yup
+    email: yup.string().email("Seu email deve ser valido").required("Você deve inserir um email"),
+    password: yup
         .string()
         .required("Insira a sua senha.")
         .matches(
             /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-            "Senha deve conter 8 caracteres, uma letra maiuscula," +
-            " uma letra minuscula, um numero e um caracter especial"
+            "Senha deve conter 8 caracteres, uma letra maiúscula," +
+            " uma letra minuscula, um numero e um carácter especial"
         ),
-    dsSenhaConfirmCad: yup
+    passwordConfirm: yup
         .string()
-        .oneOf([yup.ref("dsSenhaCad"), null], "Senha não confere")
+        .oneOf([yup.ref("password"), null], "Senha não confere")
         .required("Insira a senha e confira"),
-    ieTermoCad: yup.boolean().oneOf([true], "Os termos e condições devem ser aceitos.")
+    registrationTerms: yup.boolean().oneOf([true], "Os termos e condições devem ser aceitos.")
 });
 
 const defaultValues = {
-    nmNomeCad: "",
-    dsEmailCad: "",
-    codUsuarioCad: "",
+    name: "",
+    email: "",
+    userRegistration: "",
     cdPerfilCad: "1",
-    dsSenhaCad: "",
-    dsSenhaConfirmCad: "",
-    ieTermoCad: false
+    password: "",
+    passwordConfirm: "",
+    registrationTerms: false
 };
 
 function SignUp() {
@@ -73,23 +70,25 @@ function SignUp() {
     async function onSubmit(data) {
         setFetchingRegistration(true)
         try {
-            const response = await api.post("/cadastro", data);
-            if (response.status === 201) {
-                toast.success(
-                    "Usuário cadastrado com sucesso! Um email de confirmação foi enviado para sua caixa de entrada.",
-                    {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined
-                    }
-                );
-                navigate("/");
-                setFetchingRegistration(false)
-            }
+            console.log(data)
+
+            // const response = await api.post("/cadastro", data);
+            // if (response.status === 201) {
+            //     toast.success(
+            //         "Usuário cadastrado com sucesso! Um email de confirmação foi enviado para sua caixa de entrada.",
+            //         {
+            //             position: "top-right",
+            //             autoClose: 5000,
+            //             hideProgressBar: true,
+            //             closeOnClick: true,
+            //             pauseOnHover: true,
+            //             draggable: true,
+            //             progress: undefined
+            //         }
+            //     );
+            //     navigate("/");
+            //     setFetchingRegistration(false)
+            // }
         } catch (err) {
             if (err.response.status === 401) {
                 toast.error(
@@ -158,7 +157,7 @@ function SignUp() {
                             onSubmit={handleSubmit(onSubmit)}
                         >
                             <Controller
-                                name="nmNomeCad"
+                                name="name"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -167,8 +166,8 @@ function SignUp() {
                                         label="Nome"
                                         autoFocus
                                         type="text"
-                                        error={!!errors.nmNomeCad}
-                                        helperText={errors?.nmNomeCad?.message}
+                                        error={!!errors.name}
+                                        helperText={errors?.name?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
@@ -177,7 +176,7 @@ function SignUp() {
 
                             <div className="flex flex-row justify-between">
                                 <Controller
-                                    name="codUsuarioCad"
+                                    name="userRegistration"
                                     control={control}
                                     render={({ field }) => (
                                         <TextField
@@ -185,8 +184,8 @@ function SignUp() {
                                             className="w-3/5 mb-24 mr-5 h-36"
                                             label="Número de matricula"
                                             type="text"
-                                            error={!!errors.codUsuarioCad}
-                                            helperText={errors?.codUsuarioCad?.message}
+                                            error={!!errors.userRegistration}
+                                            helperText={errors?.userRegistration?.message}
                                             variant="outlined"
                                             fullWidth
                                         />
@@ -213,7 +212,7 @@ function SignUp() {
                             </div>
 
                             <Controller
-                                name="dsEmailCad"
+                                name="email"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -221,8 +220,8 @@ function SignUp() {
                                         className="mb-24"
                                         label="Email"
                                         type="email"
-                                        error={!!errors.dsEmailCad}
-                                        helperText={errors?.dsEmailCad?.message}
+                                        error={!!errors.email}
+                                        helperText={errors?.email?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
@@ -231,7 +230,7 @@ function SignUp() {
 
                             <div className="flex flex-row justify-between">
                                 <Controller
-                                    name="dsSenhaCad"
+                                    name="password"
                                     control={control}
                                     render={({ field }) => (
                                         <TextField
@@ -239,8 +238,8 @@ function SignUp() {
                                             className="mb-24 mr-5"
                                             label="Senha"
                                             type="password"
-                                            error={!!errors.dsSenhaCad}
-                                            helperText={errors?.dsSenhaCad?.message}
+                                            error={!!errors.password}
+                                            helperText={errors?.password?.message}
                                             variant="outlined"
                                             fullWidth
                                         />
@@ -248,7 +247,7 @@ function SignUp() {
                                 />
 
                                 <Controller
-                                    name="dsSenhaConfirmCad"
+                                    name="passwordConfirm"
                                     control={control}
                                     render={({ field }) => (
                                         <TextField
@@ -256,8 +255,8 @@ function SignUp() {
                                             className="mb-24 ml-5"
                                             label="Confirmar senha"
                                             type="password"
-                                            error={!!errors.dsSenhaConfirmCad}
-                                            helperText={errors?.dsSenhaConfirmCad?.message}
+                                            error={!!errors.passwordConfirm}
+                                            helperText={errors?.passwordConfirm?.message}
                                             variant="outlined"
                                             fullWidth
                                         />
@@ -266,16 +265,16 @@ function SignUp() {
                             </div>
 
                             <Controller
-                                name="ieTermoCad"
+                                name="registrationTerms"
                                 control={control}
                                 render={({ field }) => (
-                                    <FormControl className="items-center" error={!!errors.ieTermoCad}>
+                                    <FormControl className="items-center" error={!!errors.registrationTerms}>
                                         <FormControlLabel
                                             label="Aceito o Contrato do Usuário, 
                                             a Política de Privacidade e a Política de Cookies da BSI Drive."
                                             control={<Checkbox size="small" {...field} />}
                                         />
-                                        <FormHelperText>{errors?.ieTermoCad?.message}</FormHelperText>
+                                        <FormHelperText>{errors?.registrationTerms?.message}</FormHelperText>
                                     </FormControl>
                                 )}
                             />

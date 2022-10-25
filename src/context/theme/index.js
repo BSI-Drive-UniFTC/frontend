@@ -1,5 +1,5 @@
-import React, { createContext } from "react";
-import { cyan, red } from "@mui/material/colors";
+import React from "react";
+import { cyan } from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({

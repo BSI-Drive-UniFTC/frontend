@@ -1,14 +1,8 @@
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Box, Button, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
+import { Button } from "@mui/material";
 import { AuthContext } from "context/auth";
 import { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import logo from "assets/logo.png";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import DescriptionIcon from "@mui/icons-material/Description";
-import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import SearchIcon from "@mui/icons-material/Search";
 
 function Header() {
     const { logout } = useContext(AuthContext);
@@ -22,9 +16,9 @@ function Header() {
 
                 <nav className="flex items-center justify-between w-full">
                     <ul>
-                        <Link to="/ProjectRegistration" className="text-white font-semibold text-sm no-underline hover:underline">Cadastrar Disciplina</Link>
-                        <Link to="/ConsultProject" className="text-white font-semibold text-sm no-underline hover:underline mx-16">Cadastrar Projetos</Link>
-                        <Link to="/SubjectRegistration" className="text-white font-semibold text-sm no-underline hover:underline">Consultar Projetos</Link>
+                        <Link to="/SubjectRegistration" className="text-white font-semibold text-sm no-underline hover:underline">Cadastrar Disciplina</Link>
+                        <Link to="/ProjectRegistration" className="text-white font-semibold text-sm no-underline hover:underline mx-16">Cadastrar Projetos</Link>
+                        <Link to="/ConsultProject" className="text-white font-semibold text-sm no-underline hover:underline">Consultar Projetos</Link>
                     </ul>
                 </nav>
 

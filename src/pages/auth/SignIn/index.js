@@ -12,15 +12,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AuthContext } from "context/auth";
 import { useContext } from "react";
 import api from "services/api";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
-/**
- * Form Validation Schema
- */
 const schema = yup.object().shape({
-    dsEmailLogin: yup.string().email("Informe um email valido").required("Você deve informar um email"),
-    dsSenhaLogin: yup
+    emailLogin: yup.string().email("Informe um email valido").required("Você deve informar um email"),
+    passwordLogin: yup
         .string()
         .required("Insira a sua senha.")
         .matches(
@@ -31,8 +28,8 @@ const schema = yup.object().shape({
 });
 
 const defaultValues = {
-    dsEmailLogin: "",
-    dsSenhaLogin: ""
+    emailLogin: "",
+    passwordLogin: ""
 };
 
 function SignIn() {
@@ -48,12 +45,13 @@ function SignIn() {
 
     async function onSubmit(data) {
         try {
-            const response = await api.post("/login", data);
+            login(data);
+            // const response = await api.post("/login", data);
 
-            if (response.status === 200) {
-                const userInfo = response.data;
-                login(userInfo);
-            }
+            // if (response.status === 200) {
+            //     const userInfo = response.data;
+            //     login(userInfo);
+            // }
         } catch (err) {
             if (err.response.status === 403) {
                 toast.error("Licença expirada!", {
@@ -113,7 +111,7 @@ function SignIn() {
                             onSubmit={handleSubmit(onSubmit)}
                         >
                             <Controller
-                                name="dsEmailLogin"
+                                name="emailLogin"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -123,8 +121,8 @@ function SignIn() {
                                         autoFocus
                                         color="primary"
                                         type="email"
-                                        error={!!errors.dsEmailLogin}
-                                        helperText={errors?.dsEmailLogin?.message}
+                                        error={!!errors.emailLogin}
+                                        helperText={errors?.emailLogin?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
@@ -132,7 +130,7 @@ function SignIn() {
                             />
 
                             <Controller
-                                name="dsSenhaLogin"
+                                name="passwordLogin"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -140,8 +138,8 @@ function SignIn() {
                                         className=" mb-16"
                                         label="Senha"
                                         type="password"
-                                        error={!!errors.dsSenhaLogin}
-                                        helperText={errors?.dsSenhaLogin?.message}
+                                        error={!!errors.passwordLogin}
+                                        helperText={errors?.passwordLogin?.message}
                                         variant="outlined"
                                         fullWidth
                                     />

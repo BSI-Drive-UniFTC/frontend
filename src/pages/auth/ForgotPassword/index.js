@@ -9,11 +9,11 @@ import api from "services/api";
 import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
-    dsEmailReset: yup.string().email("Informe um email valido").required("Você deve informar um email")
+    emailReset: yup.string().email("Informe um email valido").required("Você deve informar um email")
 });
 
 const defaultValues = {
-    dsEmailReset: ""
+    emailReset: ""
 };
 
 function ClassicForgotPasswordPage() {
@@ -25,23 +25,25 @@ function ClassicForgotPasswordPage() {
         resolver: yupResolver(schema)
     });
 
-    const { isValid, dirtyFields, errors } = formState;
+    const { errors } = formState;
 
     async function onSubmit(data) {
         try {
-            const response = await api.post("/forgotPassword", data);
-            if (response.status === 200) {
-                toast.success("Foi enviado ao seu email um novo token para alteração da senha!", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined
-                });
-                navigate("/");
-            }
+            console.log(data)
+
+            // const response = await api.post("/forgotPassword", data);
+            // if (response.status === 200) {
+            //     toast.success("Foi enviado ao seu email um novo token para alteração da senha!", {
+            //         position: "top-right",
+            //         autoClose: 5000,
+            //         hideProgressBar: true,
+            //         closeOnClick: true,
+            //         pauseOnHover: true,
+            //         draggable: true,
+            //         progress: undefined
+            //     });
+            //     navigate("/");
+            // }
         } catch (err) {
             toast.error("Email não cadastrado!", {
                 position: "top-right",
@@ -80,7 +82,7 @@ function ClassicForgotPasswordPage() {
                             onSubmit={handleSubmit(onSubmit)}
                         >
                             <Controller
-                                name="dsEmailReset"
+                                name="emailReset"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -89,8 +91,8 @@ function ClassicForgotPasswordPage() {
                                         label="Email"
                                         margin="normal"
                                         type="email"
-                                        error={!!errors.dsEmailReset}
-                                        helperText={errors?.dsEmailReset?.message}
+                                        error={!!errors.emailReset}
+                                        helperText={errors?.emailReset?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
