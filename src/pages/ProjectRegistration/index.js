@@ -3,12 +3,8 @@ import { Controller, useForm } from "react-hook-form";
 import {
     Button,
     Checkbox,
-    FormControl,
-    FormControlLabel,
     TextField,
     Typography,
-    Paper,
-    FormHelperText,
     Select,
     MenuItem
 } from "@mui/material";
@@ -17,46 +13,23 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
-import logo from "assets/logo.png";
 import api from "services/api";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
 const schema = yup.object().shape({
-    name: yup.string().required("Você deve inserir seu nome"),
-    userRegistration: yup
-        .number()
-        .typeError("Informe o numero de matricula")
-        .required("Você deve inserir seu numero de matricula")
-        .min(10, "A matricula deve conter 11 digitos"),
-    email: yup.string().email("Seu email deve ser valido").required("Você deve inserir um email"),
-    password: yup
-        .string()
-        .required("Insira a sua senha.")
-        .matches(
-            /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-            "Senha deve conter 8 caracteres, uma letra maiúscula," +
-            " uma letra minuscula, um numero e um carácter especial"
-        ),
-    passwordConfirm: yup
-        .string()
-        .oneOf([yup.ref("password"), null], "Senha não confere")
-        .required("Insira a senha e confira"),
-    registrationTerms: yup.boolean().oneOf([true], "Os termos e condições devem ser aceitos.")
+    projectName: yup.string().required("Você deve inserir seu nome"),
+    projectDescription: yup.string().required("Você deve inserir a descrição do projeto"),
 });
 
 const defaultValues = {
-    name: "",
-    email: "",
-    userRegistration: "",
-    cdPerfilCad: "1",
-    password: "",
-    passwordConfirm: "",
-    registrationTerms: false
+    projectName: "",
+    projectDescription: "",
+    semester: "2",
+    subject: "1",
 };
 
 function ProjectRegistration() {
-    const navigate = useNavigate();
 
     const [fetchingRegistration, setFetchingRegistration] = useState(false)
 
@@ -69,6 +42,7 @@ function ProjectRegistration() {
     const { errors } = formState;
 
     async function onSubmit(data) {
+        console.log(data)
         setFetchingRegistration(true)
         try {
             console.log(data)
@@ -88,7 +62,6 @@ function ProjectRegistration() {
             //         }
             //     );
             //     navigate("/");
-            //     setFetchingRegistration(false)
             // }
         } catch (err) {
             if (err.response.status === 401) {
@@ -129,34 +102,27 @@ function ProjectRegistration() {
                     progress: undefined
                 });
             }
-
-            setFetchingRegistration(false)
         }
+        setFetchingRegistration(false)
     }
 
     return (
-        <div className="flex justify-center items-center h-[93vh] bg-grey-50">
-            <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 pb-28 px-28">
-
-                {/* <Paper
-                    variant="outlined"
-                    square
-                    className="w-full sm:w-auto min-h-full sm:min-h-auto py-24 px-16 sm:px-32 sm:shadow"
-                > */}
-                <div className="w-full max-w-320 sm:w-320 mx-auto sm:mx-0">
+        <div className="flex justify-center items-center h-screen bg-grey-50 my-20">
+            <div>
+                <div className="w-full max-w-320 sm:w-320 mx-auto sm:mx-0 ">
                     <Typography className="text-2xl text-center font-extrabold tracking-tight leading-tight">
                         Envie seu projeto para plataforma
                     </Typography>
 
 
                     <form
-                        name="registerForm"
+                        name="projectForm"
                         noValidate
                         className="flex flex-col justify-center w-full mt-24"
                         onSubmit={handleSubmit(onSubmit)}
                     >
                         <Controller
-                            name="name"
+                            name="projectName"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -165,8 +131,8 @@ function ProjectRegistration() {
                                     label="Nome"
                                     autoFocus
                                     type="text"
-                                    error={!!errors.name}
-                                    helperText={errors?.name?.message}
+                                    error={!!errors.projectName}
+                                    helperText={errors?.projectName?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -174,7 +140,7 @@ function ProjectRegistration() {
                         />
 
                         <Controller
-                            name="descricao"
+                            name="projectDescription"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -184,8 +150,8 @@ function ProjectRegistration() {
                                     type="text"
                                     multiline
                                     rows={5}
-                                    // error={!!errors.email}
-                                    // helperText={errors?.email?.message}
+                                    error={!!errors.projectDescription}
+                                    helperText={errors?.projectDescription?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -194,14 +160,14 @@ function ProjectRegistration() {
 
                         <div className="flex flex-row justify-between">
                             <Controller
-                                name="cdPerfilCad"
+                                name="semester"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-5/12 mb-16"
                                         type="text"
-                                        error={!!errors.cdPerfilCad}
+                                        error={!!errors.semester}
                                         variant="outlined"
                                         fullWidth
                                     >
@@ -212,14 +178,14 @@ function ProjectRegistration() {
                             />
 
                             <Controller
-                                name="cdPerfilCad"
+                                name="subject"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-5/12 mb-16"
                                         type="text"
-                                        error={!!errors.cdPerfilCad}
+                                        error={!!errors.subject}
                                         variant="outlined"
                                         fullWidth
                                     >
@@ -262,7 +228,6 @@ function ProjectRegistration() {
                         </Button>
                     </form>
                 </div>
-                {/* </Paper> */}
             </div>
         </div>
     );
