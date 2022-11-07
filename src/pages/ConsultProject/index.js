@@ -3,7 +3,7 @@ import ProjectCard from "./components/ProjectCard";
 
 function ConsultProject() {
     return (
-        <Box className="grid grid-cols-4 xl:grid-cols-5 gap-y-20 my-20 ml-10">
+        <Box className="grid grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-y-20 my-20 ml-10">
             <ProjectCard />
             <ProjectCard />
             <ProjectCard />
