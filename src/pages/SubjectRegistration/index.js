@@ -2,31 +2,28 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import {
     Button,
-    Checkbox,
     TextField,
     Typography,
     Select,
     MenuItem
 } from "@mui/material";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
-import api from "services/api";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
 const schema = yup.object().shape({
-    projectName: yup.string().required("Você deve inserir seu nome"),
-    projectDescription: yup.string().required("Você deve inserir a descrição do projeto"),
+    subjectName: yup.string().required("Você deve inserir o nome da disciplina"),
+    subjectDescription: yup.string().required("Você deve inserir a descrição da disciplina"),
 });
 
 const defaultValues = {
     subjectName: "",
     subjectDescription: "",
-    semester: "2",
-    subject: "1",
+    professor: "1",
+    semester: "1",
+    workload: "1",
 };
 
 function SubjectRegistration() {
@@ -116,13 +113,13 @@ function SubjectRegistration() {
 
 
                     <form
-                        name="projectForm"
+                        name="subjectForm"
                         noValidate
                         className="flex flex-col justify-center w-full mt-24"
                         onSubmit={handleSubmit(onSubmit)}
                     >
                         <Controller
-                            name="projectName"
+                            name="subjectName"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -131,8 +128,8 @@ function SubjectRegistration() {
                                     label="Nome"
                                     autoFocus
                                     type="text"
-                                    error={!!errors.projectName}
-                                    helperText={errors?.projectName?.message}
+                                    error={!!errors.subjectName}
+                                    helperText={errors?.subjectName?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -140,25 +137,25 @@ function SubjectRegistration() {
                         />
 
                         <Controller
-                            name="semester"
+                            name="professor"
                             control={control}
                             render={({ field }) => (
                                 <Select
                                     {...field}
                                     className=" mb-16"
                                     type="text"
-                                    error={!!errors.semester}
+                                    error={!!errors.professor}
                                     variant="outlined"
                                     fullWidth
                                 >
-                                    <MenuItem value="1">Aluno</MenuItem>
-                                    <MenuItem value="2">Professor</MenuItem>
+                                    <MenuItem value="1">Naan</MenuItem>
+                                    <MenuItem value="2">Alexandre</MenuItem>
                                 </Select>
                             )}
                         />
 
                         <Controller
-                            name="projectDescription"
+                            name="subjectDescription"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -168,8 +165,8 @@ function SubjectRegistration() {
                                     type="text"
                                     multiline
                                     rows={5}
-                                    error={!!errors.projectDescription}
-                                    helperText={errors?.projectDescription?.message}
+                                    error={!!errors.subjectDescription}
+                                    helperText={errors?.subjectDescription?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -189,26 +186,34 @@ function SubjectRegistration() {
                                         variant="outlined"
                                         fullWidth
                                     >
-                                        <MenuItem value="1">Aluno</MenuItem>
-                                        <MenuItem value="2">Professor</MenuItem>
+                                        <MenuItem value="1">Primeiro semestre</MenuItem>
+                                        <MenuItem value="2">Segundo semestre</MenuItem>
+                                        <MenuItem value="3">Terceiro semestre</MenuItem>
+                                        <MenuItem value="4">Quarto semestre</MenuItem>
+                                        <MenuItem value="5">Quinta semestre</MenuItem>
+                                        <MenuItem value="6">Sexto semestre</MenuItem>
+                                        <MenuItem value="7">Sétimo semestre</MenuItem>
+                                        <MenuItem value="8">Oitavo semestre</MenuItem>
                                     </Select>
                                 )}
                             />
 
                             <Controller
-                                name="subject"
+                                name="workload"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-5/12 mb-16"
                                         type="text"
-                                        error={!!errors.subject}
+                                        error={!!errors.workload}
                                         variant="outlined"
                                         fullWidth
                                     >
-                                        <MenuItem value="1">Aluno</MenuItem>
-                                        <MenuItem value="2">Professor</MenuItem>
+                                        <MenuItem value="1">105 horas</MenuItem>
+                                        <MenuItem value="2">210 horas</MenuItem>
+                                        <MenuItem value="3">315 horas</MenuItem>
+                                        <MenuItem value="4">420 horas</MenuItem>
                                     </Select>
                                 )}
                             />
@@ -219,7 +224,7 @@ function SubjectRegistration() {
                             variant="contained"
                             color="secondary"
                             className="w-3/5 mx-auto text-center my-16 uppercase bg-primary"
-                            aria-label="sendProject"
+                            aria-label="sendSubject"
                             disabled={fetchingRegistration}
                             type="submit"
                             size="large"

@@ -2,7 +2,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import {
     Button,
-    Checkbox,
     TextField,
     Typography,
     Select,
@@ -10,22 +9,21 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
-import api from "services/api";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
 const schema = yup.object().shape({
-    projectName: yup.string().required("Você deve inserir seu nome"),
+    projectName: yup.string().required("Você deve inserir o nome do projeto"),
     projectDescription: yup.string().required("Você deve inserir a descrição do projeto"),
 });
 
 const defaultValues = {
     projectName: "",
     projectDescription: "",
-    semester: "2",
+    semester: "1",
+    professor: "1",
     subject: "1",
 };
 
@@ -33,7 +31,7 @@ function ProjectRegistration() {
 
     const [fetchingRegistration, setFetchingRegistration] = useState(false)
 
-    const { control, formState, handleSubmit, reset } = useForm({
+    const { control, formState, handleSubmit } = useForm({
         mode: "onChange",
         defaultValues,
         resolver: yupResolver(schema)
@@ -128,7 +126,7 @@ function ProjectRegistration() {
                                 <TextField
                                     {...field}
                                     className="mb-16"
-                                    label="Nome"
+                                    placeholder="Nome"
                                     autoFocus
                                     type="text"
                                     error={!!errors.projectName}
@@ -165,14 +163,38 @@ function ProjectRegistration() {
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        className="w-5/12 mb-16"
+                                        className="w-4/12 mb-16 mx-2"
                                         type="text"
                                         error={!!errors.semester}
                                         variant="outlined"
                                         fullWidth
                                     >
-                                        <MenuItem value="1">Aluno</MenuItem>
-                                        <MenuItem value="2">Professor</MenuItem>
+                                        <MenuItem value="1">Primeiro semestre</MenuItem>
+                                        <MenuItem value="2">Segundo semestre</MenuItem>
+                                        <MenuItem value="3">Terceiro semestre</MenuItem>
+                                        <MenuItem value="4">Quarto semestre</MenuItem>
+                                        <MenuItem value="5">Quinta semestre</MenuItem>
+                                        <MenuItem value="6">Sexto semestre</MenuItem>
+                                        <MenuItem value="7">Sétimo semestre</MenuItem>
+                                        <MenuItem value="8">Oitavo semestre</MenuItem>
+                                    </Select>
+                                )}
+                            />
+
+                            <Controller
+                                name="professor"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        className="w-4/12 mb-16 mx-2"
+                                        type="text"
+                                        error={!!errors.subject}
+                                        variant="outlined"
+                                        fullWidth
+                                    >
+                                        <MenuItem value="1">Naan</MenuItem>
+                                        <MenuItem value="2">Alexandre</MenuItem>
                                     </Select>
                                 )}
                             />
@@ -183,14 +205,14 @@ function ProjectRegistration() {
                                 render={({ field }) => (
                                     <Select
                                         {...field}
-                                        className="w-5/12 mb-16"
+                                        className="w-4/12 mb-16 mx-2"
                                         type="text"
                                         error={!!errors.subject}
                                         variant="outlined"
                                         fullWidth
                                     >
-                                        <MenuItem value="1">Aluno</MenuItem>
-                                        <MenuItem value="2">Professor</MenuItem>
+                                        <MenuItem value="1">TPW</MenuItem>
+                                        <MenuItem value="2">Top. Avançados em Eng.Software</MenuItem>
                                     </Select>
                                 )}
                             />
