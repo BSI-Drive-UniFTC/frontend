@@ -5,7 +5,6 @@ import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 
 import logo from "assets/logo.png";
-import api from "services/api";
 import { toast } from "react-toastify";
 
 const schema = yup.object().shape({

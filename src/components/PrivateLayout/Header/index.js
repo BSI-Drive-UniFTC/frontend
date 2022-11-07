@@ -29,7 +29,7 @@ function Header() {
                     logout
                 </Button>
             </header>
-            <div className=" flex-1">
+            <div className="flex-1">
                 <Outlet />
             </div>
         </div>

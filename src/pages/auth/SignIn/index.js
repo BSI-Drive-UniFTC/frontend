@@ -11,7 +11,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { AuthContext } from "context/auth";
 import { useContext } from "react";
-import api from "services/api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
