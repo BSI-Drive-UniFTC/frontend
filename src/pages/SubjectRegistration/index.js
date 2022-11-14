@@ -229,7 +229,7 @@ function SubjectRegistration() {
                             type="submit"
                             size="large"
                         >
-                            Enviar projeto
+                            Cadastrar Disciplina
                         </Button>
                     </form>
                 </div>
