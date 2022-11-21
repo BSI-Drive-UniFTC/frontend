@@ -17,6 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
 import logo from "assets/logo.png";
+import uniFTC from "assets/Logo_UniFTC.png";
 import api from "services/api";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -128,10 +129,17 @@ function SignUp() {
 
     return (
         <div className="flex justify-center items-center bg-grey-50">
-            <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 p-28">
-                <div className="w-500 h-92 flex flex-col justify-center items-center my-10">
+            <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 p-20">
+                <a href="https://www.uniftc.edu.br/" target="_blank" className="w-500 h-52 flex flex-col justify-center items-center" rel="noreferrer">
+                    <img className=" w-full items-center justify-center" src={uniFTC} alt="logo" />
+                </a>
+
+                <div className="w-500 h-92 flex flex-col justify-center items-center mt-10">
                     <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
+
+
+
                 <Paper
                     variant="outlined"
                     square
@@ -280,6 +288,7 @@ function SignUp() {
                         </form>
                     </div>
                 </Paper>
+
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 
 import logo from "assets/logo.png";
+import uniFTC from "assets/Logo_UniFTC.png";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -95,9 +96,9 @@ function SignIn() {
     }
 
     return (
-        <div className=" h-screen flex justify-center items-center bg-gray-50">
+        <div className="h-screen flex justify-center items-center bg-gray-50">
             <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 mx-20">
-                <div className="w-500 h-92 flex flex-col justify-center items-center my-10">
+                <div className="w-500 h-92 lg:h-64 lg:mt-128 flex flex-col justify-center items-center my-10">
                     <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
 
@@ -177,6 +178,11 @@ function SignIn() {
                         </form>
                     </div>
                 </Paper>
+
+                <a href="https://www.uniftc.edu.br/" target="_blank" className="w-500 h-64 flex flex-col justify-center items-center mt-32" rel="noreferrer">
+                    <img className=" w-full items-center justify-center" src={uniFTC} alt="logo" />
+                </a>
+                <Typography className="mb-10" variant="subtitle2">Feito com amor pelos alunos de Tópicos avançados em engenharia de software 2022.2</Typography>
             </div>
         </div>
     );

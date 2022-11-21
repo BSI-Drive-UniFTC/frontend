@@ -38,13 +38,18 @@ export function AuthProvider({ children }) {
         console.log({ userInfo })
 
         const { token } = userInfo;
+        const { id } = userInfo;
+
         localStorage.setItem("token", token);
+        localStorage.setItem("id", id);
+
         navigate("/consultproject");
     };
 
     const logout = () => {
 
         localStorage.removeItem("token");
+        localStorage.removeItem("id");
 
         api.defaults.headers.Authorization = null;
         setUser(null);
@@ -52,9 +57,10 @@ export function AuthProvider({ children }) {
     };
 
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("id");
 
     return (
-        <AuthContext.Provider value={(user, loading, { token, login, logout, userName })}>
+        <AuthContext.Provider value={(user, loading, { token, userId, login, logout, userName })}>
             {children}
         </AuthContext.Provider>
     );
