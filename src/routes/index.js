@@ -11,6 +11,7 @@ import ResetPassword from "pages/auth/ResetPassword";
 import ProjectRegistration from "pages/ProjectRegistration";
 import ConsultProject from "pages/ConsultProject";
 import SubjectRegistration from "pages/SubjectRegistration";
+import EmailConfirm from "pages/Public/EmailConfirm";
 
 function routes() {
     return (
@@ -28,6 +29,7 @@ function routes() {
                             <Route path="/SubjectRegistration" element={<SubjectRegistration />} />
                         </Route>
                         <Route path="*" element={<NotFound />} />
+                        <Route path="/emailConfirm" element={<EmailConfirm />} />
                     </Routes>
                 </Palette>
             </AuthProvider>

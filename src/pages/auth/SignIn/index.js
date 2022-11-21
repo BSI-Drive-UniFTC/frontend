@@ -13,10 +13,11 @@ import { AuthContext } from "context/auth";
 import { useContext } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import api from "services/api";
 
 const schema = yup.object().shape({
-    emailLogin: yup.string().email("Informe um email valido").required("Você deve informar um email"),
-    passwordLogin: yup
+    user: yup.string().email("Informe um email valido").required("Você deve informar um email"),
+    senha: yup
         .string()
         .required("Insira a sua senha.")
         .matches(
@@ -27,8 +28,8 @@ const schema = yup.object().shape({
 });
 
 const defaultValues = {
-    emailLogin: "",
-    passwordLogin: ""
+    user: "",
+    senha: ""
 };
 
 function SignIn() {
@@ -43,15 +44,18 @@ function SignIn() {
     const { errors } = formState;
 
     async function onSubmit(data) {
-        try {
-            login(data);
-            // const response = await api.post("/login", data);
 
-            // if (response.status === 200) {
-            //     const userInfo = response.data;
-            //     login(userInfo);
-            // }
+        try {
+
+            const response = await api.post("/login", null, { params: data });
+
+            if (response.status === 200) {
+                const userInfo = response.data;
+                login(userInfo);
+            }
         } catch (err) {
+            console.log(err.response)
+
             if (err.response.status === 403) {
                 toast.error("Licença expirada!", {
                     position: "top-right",
@@ -110,7 +114,7 @@ function SignIn() {
                             onSubmit={handleSubmit(onSubmit)}
                         >
                             <Controller
-                                name="emailLogin"
+                                name="user"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -120,8 +124,8 @@ function SignIn() {
                                         autoFocus
                                         color="primary"
                                         type="email"
-                                        error={!!errors.emailLogin}
-                                        helperText={errors?.emailLogin?.message}
+                                        error={!!errors.user}
+                                        helperText={errors?.user?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
@@ -129,7 +133,7 @@ function SignIn() {
                             />
 
                             <Controller
-                                name="passwordLogin"
+                                name="senha"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -137,8 +141,8 @@ function SignIn() {
                                         className=" mb-16"
                                         label="Senha"
                                         type="password"
-                                        error={!!errors.passwordLogin}
-                                        helperText={errors?.passwordLogin?.message}
+                                        error={!!errors.senha}
+                                        helperText={errors?.senha?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
