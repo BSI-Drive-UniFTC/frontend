@@ -1,37 +1,49 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import {
+    Avatar,
     Button,
     TextField,
     Typography,
     Select,
-    MenuItem
+    MenuItem,
+    Input
 } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudDoneIcon from '@mui/icons-material/CloudDone';
 
 import * as yup from "yup";
 
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import api from "services/api";
+import { AuthContext } from "context/auth";
 
 const schema = yup.object().shape({
-    projectName: yup.string().required("Você deve inserir o nome do projeto"),
-    projectDescription: yup.string().required("Você deve inserir a descrição do projeto"),
+    nomeProjeto: yup.string().required("Você deve inserir o nome do projeto"),
+    descricao: yup.string().required("Você deve inserir a descrição do projeto"),
 });
 
 const defaultValues = {
-    projectName: "",
-    projectDescription: "",
-    semester: "1",
-    professor: "1",
-    subject: "1",
+    nomeProjeto: "",
+    descricao: "",
+    semestre: "1",
+    idProfessor: "",
+    idDisciplina: "",
 };
 
 function ProjectRegistration() {
 
+    const { userId } = useContext(AuthContext);
+
+    const [teachers, setTeachers] = useState(null);
+    const [subjects, setSubjects] = useState(null);
+
     const [fetchingRegistration, setFetchingRegistration] = useState(false)
 
-    const { control, formState, handleSubmit } = useForm({
+    const [project, setProject] = useState(null);
+
+    const { control, formState, handleSubmit, setValue, watch, } = useForm({
         mode: "onChange",
         defaultValues,
         resolver: yupResolver(schema)
@@ -39,28 +51,93 @@ function ProjectRegistration() {
 
     const { errors } = formState;
 
-    async function onSubmit(data) {
-        console.log(data)
-        setFetchingRegistration(true)
-        try {
-            console.log(data)
+    const getTeachers = useCallback(async () => {
 
-            // const response = await api.post("/cadastro", data);
-            // if (response.status === 201) {
-            //     toast.success(
-            //         "Usuário cadastrado com sucesso! Um email de confirmação foi enviado para sua caixa de entrada.",
-            //         {
-            //             position: "top-right",
-            //             autoClose: 5000,
-            //             hideProgressBar: true,
-            //             closeOnClick: true,
-            //             pauseOnHover: true,
-            //             draggable: true,
-            //             progress: undefined
-            //         }
-            //     );
-            //     navigate("/");
-            // }
+        try {
+            const response = await api.get("/professores", { params: { id: userId } });
+            setTeachers(response.data);
+
+        } catch (err) {
+            console.log(err.response)
+            setTeachers([]);
+            toast.error("Houve um erro ao buscar os professores no banco de dados, tente novamente!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+            });
+        }
+    }, [userId]);
+
+    const getSubjects = useCallback(async () => {
+
+        try {
+            const response = await api.get("/disciplina", { params: { id: userId } });
+            setSubjects(response.data);
+
+        } catch (err) {
+            console.log(err.response)
+            setTeachers([]);
+            toast.error("Houve um erro ao buscar as disciplinas no banco de dados, tente novamente!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+            });
+        }
+    }, [userId]);
+
+    const zipChangeHandler = event => {
+        const newProject = event.target?.files?.[0];
+
+        console.log(newProject)
+
+        setProject(newProject);
+    };
+
+    const handleRemoveZip = () => {
+        setProject(null);
+    };
+
+    async function onSubmit(data) {
+
+        setFetchingRegistration(true)
+
+        try {
+
+            const formData = new FormData();
+            formData.append("project", project);
+            console.log(data, formData)
+            console.log({ data, userId })
+
+            const response = await api.post("/upload", formData, {
+                params: { data, idUsuario: userId },
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            if (response.status === 201) {
+                toast.success(
+                    "Projeto cadastrado com sucesso!",
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined
+                    }
+                );
+            }
+
         } catch (err) {
             if (err.response.status === 401) {
                 toast.error(
@@ -101,8 +178,29 @@ function ProjectRegistration() {
                 });
             }
         }
+
         setFetchingRegistration(false)
     }
+
+    const selectedTeachers = watch("idProfessor");
+    const selectedSubjects = watch("idDisciplina");
+
+    useEffect(() => {
+        if (!selectedTeachers && teachers && teachers.length) {
+            setValue("idProfessor", teachers[0].id);
+        }
+    }, [selectedTeachers, teachers]);
+
+    useEffect(() => {
+        if (!selectedSubjects && subjects && subjects.length) {
+            setValue("idDisciplina", subjects[0]._id);
+        }
+    }, [selectedSubjects, subjects]);
+
+    useEffect(() => {
+        getTeachers()
+        getSubjects()
+    }, [getTeachers, getSubjects]);
 
     return (
         <div className="flex justify-center items-center h-screen bg-grey-50 my-20">
@@ -120,7 +218,7 @@ function ProjectRegistration() {
                         onSubmit={handleSubmit(onSubmit)}
                     >
                         <Controller
-                            name="projectName"
+                            name="nomeProjeto"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -129,8 +227,8 @@ function ProjectRegistration() {
                                     placeholder="Nome"
                                     autoFocus
                                     type="text"
-                                    error={!!errors.projectName}
-                                    helperText={errors?.projectName?.message}
+                                    error={!!errors.nomeProjeto}
+                                    helperText={errors?.nomeProjeto?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -138,7 +236,7 @@ function ProjectRegistration() {
                         />
 
                         <Controller
-                            name="projectDescription"
+                            name="descricao"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -148,8 +246,8 @@ function ProjectRegistration() {
                                     type="text"
                                     multiline
                                     rows={5}
-                                    error={!!errors.projectDescription}
-                                    helperText={errors?.projectDescription?.message}
+                                    error={!!errors.descricao}
+                                    helperText={errors?.descricao?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -158,14 +256,14 @@ function ProjectRegistration() {
 
                         <div className="flex flex-row justify-between">
                             <Controller
-                                name="semester"
+                                name="semestre"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-4/12 mb-16 mx-2"
                                         type="text"
-                                        error={!!errors.semester}
+                                        error={!!errors.semestre}
                                         variant="outlined"
                                         fullWidth
                                     >
@@ -182,37 +280,45 @@ function ProjectRegistration() {
                             />
 
                             <Controller
-                                name="professor"
+                                name="idProfessor"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-4/12 mb-16 mx-2"
                                         type="text"
-                                        error={!!errors.subject}
+                                        error={!!errors.idProfessor}
                                         variant="outlined"
                                         fullWidth
                                     >
-                                        <MenuItem value="1">Naan</MenuItem>
-                                        <MenuItem value="2">Alexandre</MenuItem>
+                                        {teachers &&
+                                            teachers.map(({ id, nome }) => (
+                                                <MenuItem key={id} value={id}>
+                                                    {nome}
+                                                </MenuItem>
+                                            ))}
                                     </Select>
                                 )}
                             />
 
                             <Controller
-                                name="subject"
+                                name="idDisciplina"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-4/12 mb-16 mx-2"
                                         type="text"
-                                        error={!!errors.subject}
+                                        error={!!errors.idDisciplina}
                                         variant="outlined"
                                         fullWidth
                                     >
-                                        <MenuItem value="1">TPW</MenuItem>
-                                        <MenuItem value="2">Top. Avançados em Eng.Software</MenuItem>
+                                        {subjects &&
+                                            subjects.map(({ _id, nome }) => (
+                                                <MenuItem key={_id} value={_id}>
+                                                    {nome}
+                                                </MenuItem>
+                                            ))}
                                     </Select>
                                 )}
                             />
@@ -223,19 +329,45 @@ function ProjectRegistration() {
                             component="label"
                             className="flex flex-col justify-between p-16"
                         >
-                            <CloudUploadIcon />
-                            <div className="my-10">
-                                <Typography variant="button">Click ou arraste o arquivo até essa área para o upload</Typography>
-                            </div>
-                            <div className="text-5" >
-                                <Typography variant="body2" >Suporta um arquivo único ou diversos uploads. Tamanho máximo do arquivo 150MB.</Typography>
-                            </div>
+                            {!project ? (
+                                <div className="flex flex-col justify-between items-center w-full">
+                                    <Avatar variant="circle" className="w-48 h-48 my-5 bg-black">
+                                        <CloudUploadIcon className="w-32 h-32" />
+                                    </Avatar>
+                                    <div className="my-10">
+                                        <Typography variant="button">Click ou arraste o arquivo até essa área para o upload</Typography>
+                                    </div>
+                                    <div className="text-5" >
+                                        <Typography variant="body2" >Suporta um único arquivo no formato ZIP.</Typography>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col justify-between items-center w-full">
+                                    <Avatar variant="circle" className="w-48 h-48 my-5 bg-green-A700">
+                                        <CloudDoneIcon className="w-32 h-32" />
+                                    </Avatar>
+                                    <div className="text-5" >
+                                        <Typography variant="body2" >Arquivo carregado!</Typography>
+                                    </div>
+                                </div>
 
-                            <input
+                            )}
+
+                            <Input
+                                className="hidden"
+                                onChange={e => zipChangeHandler(e)}
+                                inputProps={{ accept: ".zip" }}
                                 type="file"
-                                hidden
                             />
                         </Button>
+
+
+                        {project ? (
+                            <Button variant="contained" className="my-10" onClick={() => handleRemoveZip()}>Remover arquivo</Button>
+                        ) : (
+                            <Button className="hidden" onClick={() => handleRemoveZip()}>Remover</Button>
+                        )}
+
 
                         <Button
                             variant="contained"
