@@ -11,26 +11,32 @@ import {
 import * as yup from "yup";
 
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { AuthContext } from "context/auth";
+import api from "services/api";
 
 const schema = yup.object().shape({
-    subjectName: yup.string().required("Você deve inserir o nome da disciplina"),
-    subjectDescription: yup.string().required("Você deve inserir a descrição da disciplina"),
+    nome: yup.string().required("Você deve inserir o nome da disciplina"),
+    descricao: yup.string().required("Você deve inserir a descrição da disciplina"),
 });
 
 const defaultValues = {
-    subjectName: "",
-    subjectDescription: "",
-    professor: "1",
-    semester: "1",
-    workload: "1",
+    nome: "",
+    descricao: "",
+    idProfessor: "",
+    semestre: "1",
+    cargahoraria: "80",
 };
 
 function SubjectRegistration() {
 
+    const { userId } = useContext(AuthContext);
+
+    const [teachers, setTeachers] = useState(null);
+
     const [fetchingRegistration, setFetchingRegistration] = useState(false)
 
-    const { control, formState, handleSubmit, reset } = useForm({
+    const { control, formState, handleSubmit, setValue, watch, reset } = useForm({
         mode: "onChange",
         defaultValues,
         resolver: yupResolver(schema)
@@ -38,35 +44,40 @@ function SubjectRegistration() {
 
     const { errors } = formState;
 
+
+
+    const getTeachers = useCallback(async () => {
+
+        try {
+            const response = await api.get("/professores", { params: { id: userId } });
+            setTeachers(response.data);
+
+        } catch (err) {
+            console.log(err.response)
+            setTeachers([]);
+            toast.error("Houve um erro ao buscar os professores no banco de dados, tente novamente!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+            });
+        }
+    }, [userId]);
+
     async function onSubmit(data) {
         console.log(data)
         setFetchingRegistration(true)
         try {
-            console.log(data)
-
-            // const response = await api.post("/cadastro", data);
-            // if (response.status === 201) {
-            //     toast.success(
-            //         "Usuário cadastrado com sucesso! Um email de confirmação foi enviado para sua caixa de entrada.",
-            //         {
-            //             position: "top-right",
-            //             autoClose: 5000,
-            //             hideProgressBar: true,
-            //             closeOnClick: true,
-            //             pauseOnHover: true,
-            //             draggable: true,
-            //             progress: undefined
-            //         }
-            //     );
-            //     navigate("/");
-            // }
-        } catch (err) {
-            if (err.response.status === 401) {
-                toast.error(
-                    "Erro ao cadastrar, o numero de matricula digitado possui um valor inválido ou já está cadastrado no banco de dados.",
+            const response = await api.post("/disciplina", data);
+            if (response.status === 201) {
+                toast.success(
+                    "Disciplina cadastrada com sucesso!",
                     {
                         position: "top-right",
-                        autoClose: 4500,
+                        autoClose: 5000,
                         hideProgressBar: true,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -74,22 +85,12 @@ function SubjectRegistration() {
                         progress: undefined
                     }
                 );
+                reset()
             }
-
-            if (err.response.status === 406) {
-                toast.error("Erro ao cadastrar, o Email digitado já consta no banco de dados.", {
-                    position: "top-right",
-                    autoClose: 4500,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined
-                });
-            }
-
+        } catch (err) {
+            console.log(err.response)
             if (err.response.status === 400) {
-                toast.error("Houve algum erro e o usuário não pode ser cadastrado, tente novamente!", {
+                toast.error("Houve algum erro e a disciplina não pode ser cadastrada, tente novamente!", {
                     position: "top-right",
                     autoClose: 4000,
                     hideProgressBar: true,
@@ -102,6 +103,18 @@ function SubjectRegistration() {
         }
         setFetchingRegistration(false)
     }
+
+    const selectedTeachers = watch("idProfessor");
+
+    useEffect(() => {
+        if (!selectedTeachers && teachers && teachers.length) {
+            setValue("idProfessor", teachers[0].id);
+        }
+    }, [selectedTeachers, teachers]);
+
+    useEffect(() => {
+        getTeachers();
+    }, [getTeachers]);
 
     return (
         <div className="flex justify-center items-center h-screen bg-grey-50 my-20">
@@ -119,7 +132,7 @@ function SubjectRegistration() {
                         onSubmit={handleSubmit(onSubmit)}
                     >
                         <Controller
-                            name="subjectName"
+                            name="nome"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -128,8 +141,8 @@ function SubjectRegistration() {
                                     label="Nome"
                                     autoFocus
                                     type="text"
-                                    error={!!errors.subjectName}
-                                    helperText={errors?.subjectName?.message}
+                                    error={!!errors.nome}
+                                    helperText={errors?.nome?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -137,25 +150,29 @@ function SubjectRegistration() {
                         />
 
                         <Controller
-                            name="professor"
+                            name="idProfessor"
                             control={control}
                             render={({ field }) => (
                                 <Select
                                     {...field}
                                     className=" mb-16"
                                     type="text"
-                                    error={!!errors.professor}
+                                    error={!!errors.idProfessor}
                                     variant="outlined"
                                     fullWidth
                                 >
-                                    <MenuItem value="1">Naan</MenuItem>
-                                    <MenuItem value="2">Alexandre</MenuItem>
+                                    {teachers &&
+                                        teachers.map(({ id, nome }) => (
+                                            <MenuItem key={id} value={id}>
+                                                {nome}
+                                            </MenuItem>
+                                        ))}
                                 </Select>
                             )}
                         />
 
                         <Controller
-                            name="subjectDescription"
+                            name="descricao"
                             control={control}
                             render={({ field }) => (
                                 <TextField
@@ -165,8 +182,8 @@ function SubjectRegistration() {
                                     type="text"
                                     multiline
                                     rows={5}
-                                    error={!!errors.subjectDescription}
-                                    helperText={errors?.subjectDescription?.message}
+                                    error={!!errors.descricao}
+                                    helperText={errors?.descricao?.message}
                                     variant="outlined"
                                     fullWidth
                                 />
@@ -175,14 +192,14 @@ function SubjectRegistration() {
 
                         <div className="flex flex-row justify-between">
                             <Controller
-                                name="semester"
+                                name="semestre"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-5/12 mb-16"
                                         type="text"
-                                        error={!!errors.semester}
+                                        error={!!errors.semestre}
                                         variant="outlined"
                                         fullWidth
                                     >
@@ -199,21 +216,22 @@ function SubjectRegistration() {
                             />
 
                             <Controller
-                                name="workload"
+                                name="cargahoraria"
                                 control={control}
                                 render={({ field }) => (
                                     <Select
                                         {...field}
                                         className="w-5/12 mb-16"
                                         type="text"
-                                        error={!!errors.workload}
+                                        error={!!errors.cargahoraria}
                                         variant="outlined"
                                         fullWidth
                                     >
-                                        <MenuItem value="1">105 horas</MenuItem>
-                                        <MenuItem value="2">210 horas</MenuItem>
-                                        <MenuItem value="3">315 horas</MenuItem>
-                                        <MenuItem value="4">420 horas</MenuItem>
+                                        <MenuItem value="80">80 horas</MenuItem>
+                                        <MenuItem value="120">120 horas</MenuItem>
+                                        <MenuItem value="240">240 horas</MenuItem>
+                                        <MenuItem value="315">315 horas</MenuItem>
+                                        <MenuItem value="420">420 horas</MenuItem>
                                     </Select>
                                 )}
                             />

@@ -3,6 +3,7 @@ import { AuthContext } from "context/auth";
 import { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import logo from "assets/logo.png";
+import uniFTC from "assets/Logo_UniFTC.png";
 
 function Header() {
     const { logout } = useContext(AuthContext);
@@ -22,6 +23,10 @@ function Header() {
                     </ul>
                 </nav>
 
+
+                <a href="https://aluno.uniftc.edu.br/#/login" target="_blank" className="flex items-center justify-center bg-primary h-40 w-40 ml-20" rel="noreferrer">
+                    <img src={uniFTC} alt="logo" className="w-64 h-32 mb-5" />
+                </a>
                 <Button
                     className="w-64 bg-primary text-white hover:bg-white hover:text-black  font-semibold mx-12 "
                     onClick={() => logout()}

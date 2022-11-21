@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 
 import logo from "assets/logo.png";
+import uniFTC from "assets/Logo_UniFTC.png";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,10 +14,11 @@ import { AuthContext } from "context/auth";
 import { useContext } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import api from "services/api";
 
 const schema = yup.object().shape({
-    emailLogin: yup.string().email("Informe um email valido").required("Você deve informar um email"),
-    passwordLogin: yup
+    user: yup.string().email("Informe um email valido").required("Você deve informar um email"),
+    senha: yup
         .string()
         .required("Insira a sua senha.")
         .matches(
@@ -27,8 +29,8 @@ const schema = yup.object().shape({
 });
 
 const defaultValues = {
-    emailLogin: "",
-    passwordLogin: ""
+    user: "",
+    senha: ""
 };
 
 function SignIn() {
@@ -43,15 +45,18 @@ function SignIn() {
     const { errors } = formState;
 
     async function onSubmit(data) {
-        try {
-            login(data);
-            // const response = await api.post("/login", data);
 
-            // if (response.status === 200) {
-            //     const userInfo = response.data;
-            //     login(userInfo);
-            // }
+        try {
+
+            const response = await api.post("/login", null, { params: data });
+
+            if (response.status === 200) {
+                const userInfo = response.data;
+                login(userInfo);
+            }
         } catch (err) {
+            console.log(err.response)
+
             if (err.response.status === 403) {
                 toast.error("Licença expirada!", {
                     position: "top-right",
@@ -91,9 +96,9 @@ function SignIn() {
     }
 
     return (
-        <div className=" h-screen flex justify-center items-center bg-gray-50">
+        <div className="h-screen flex justify-center items-center bg-gray-50">
             <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 mx-20">
-                <div className="w-500 h-92 flex flex-col justify-center items-center my-10">
+                <div className="w-500 h-92 lg:h-64 lg:mt-128 flex flex-col justify-center items-center my-10">
                     <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
 
@@ -110,7 +115,7 @@ function SignIn() {
                             onSubmit={handleSubmit(onSubmit)}
                         >
                             <Controller
-                                name="emailLogin"
+                                name="user"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -120,8 +125,8 @@ function SignIn() {
                                         autoFocus
                                         color="primary"
                                         type="email"
-                                        error={!!errors.emailLogin}
-                                        helperText={errors?.emailLogin?.message}
+                                        error={!!errors.user}
+                                        helperText={errors?.user?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
@@ -129,7 +134,7 @@ function SignIn() {
                             />
 
                             <Controller
-                                name="passwordLogin"
+                                name="senha"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -137,8 +142,8 @@ function SignIn() {
                                         className=" mb-16"
                                         label="Senha"
                                         type="password"
-                                        error={!!errors.passwordLogin}
-                                        helperText={errors?.passwordLogin?.message}
+                                        error={!!errors.senha}
+                                        helperText={errors?.senha?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
@@ -173,6 +178,11 @@ function SignIn() {
                         </form>
                     </div>
                 </Paper>
+
+                <a href="https://www.uniftc.edu.br/" target="_blank" className="w-500 h-64 flex flex-col justify-center items-center mt-32" rel="noreferrer">
+                    <img className=" w-full items-center justify-center" src={uniFTC} alt="logo" />
+                </a>
+                <Typography className="mb-10" variant="subtitle2">Feito com amor pelos alunos de Tópicos avançados em engenharia de software 2022.2</Typography>
             </div>
         </div>
     );

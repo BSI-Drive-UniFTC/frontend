@@ -22,36 +22,34 @@ export function AuthProvider({ children }) {
         setLoading(false);
     }, []);
 
-    const login = ({ emailLogin, passwordLogin }) => {
-        console.log("login auth", { emailLogin, passwordLogin })
+    const login = (userInfo) => {
+        // console.log("login auth", { emailLogin, passwordLogin })
 
-        if (passwordLogin === "Teste123#") {
-            setUser(emailLogin);
-            setUserName(emailLogin);
+        // if (passwordLogin === "Teste123#") {
+        //     setUser(emailLogin);
+        //     setUserName(emailLogin);
 
-            const { token } = emailLogin;
-            localStorage.setItem("token", emailLogin);
+        //     const { token } = emailLogin;
+        //     localStorage.setItem("token", emailLogin);
 
-            navigate("/consultproject");
-        }
+        //     navigate("/consultproject");
+        // }
 
-        // const loggedUser = userInfo.emailLogin;
-        // const userNameData = userInfo.Nome;
-        // const { token } = userInfo;
+        console.log({ userInfo })
 
-        // localStorage.setItem("user", loggedUser);
-        // localStorage.setItem("userNameData", userNameData);
-        // localStorage.setItem("token", token);
+        const { token } = userInfo;
+        const { id } = userInfo;
 
-        // setUser(loggedUser);
-        // setUserName(userNameData);
-        // navigate("/dashboard");
+        localStorage.setItem("token", token);
+        localStorage.setItem("id", id);
+
+        navigate("/consultproject");
     };
 
     const logout = () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("userNameData");
+
         localStorage.removeItem("token");
+        localStorage.removeItem("id");
 
         api.defaults.headers.Authorization = null;
         setUser(null);
@@ -59,9 +57,10 @@ export function AuthProvider({ children }) {
     };
 
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("id");
 
     return (
-        <AuthContext.Provider value={(user, loading, { token, login, logout, userName })}>
+        <AuthContext.Provider value={(user, loading, { token, userId, login, logout, userName })}>
             {children}
         </AuthContext.Provider>
     );

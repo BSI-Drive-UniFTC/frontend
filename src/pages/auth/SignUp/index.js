@@ -17,19 +17,15 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
 import logo from "assets/logo.png";
+import uniFTC from "assets/Logo_UniFTC.png";
 import api from "services/api";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
 const schema = yup.object().shape({
-    name: yup.string().required("Você deve inserir seu nome"),
-    userRegistration: yup
-        .number()
-        .typeError("Informe o numero de matricula")
-        .required("Você deve inserir seu numero de matricula")
-        .min(10, "A matricula deve conter 11 digitos"),
+    nome: yup.string().required("Você deve inserir seu nome"),
     email: yup.string().email("Seu email deve ser valido").required("Você deve inserir um email"),
-    password: yup
+    senha: yup
         .string()
         .required("Insira a sua senha.")
         .matches(
@@ -39,17 +35,16 @@ const schema = yup.object().shape({
         ),
     passwordConfirm: yup
         .string()
-        .oneOf([yup.ref("password"), null], "Senha não confere")
+        .oneOf([yup.ref("senha"), null], "Senha não confere")
         .required("Insira a senha e confira"),
     registrationTerms: yup.boolean().oneOf([true], "Os termos e condições devem ser aceitos.")
 });
 
 const defaultValues = {
-    name: "",
+    nome: "",
     email: "",
-    userRegistration: "",
-    cdPerfilCad: "1",
-    password: "",
+    perfil: "aluno",
+    senha: "",
     passwordConfirm: "",
     registrationTerms: false
 };
@@ -70,25 +65,24 @@ function SignUp() {
     async function onSubmit(data) {
         setFetchingRegistration(true)
         try {
-            console.log(data)
 
-            // const response = await api.post("/cadastro", data);
-            // if (response.status === 201) {
-            //     toast.success(
-            //         "Usuário cadastrado com sucesso! Um email de confirmação foi enviado para sua caixa de entrada.",
-            //         {
-            //             position: "top-right",
-            //             autoClose: 5000,
-            //             hideProgressBar: true,
-            //             closeOnClick: true,
-            //             pauseOnHover: true,
-            //             draggable: true,
-            //             progress: undefined
-            //         }
-            //     );
-            //     navigate("/");
-            //     setFetchingRegistration(false)
-            // }
+            const response = await api.post("/signUp", data);
+            if (response.status === 201) {
+                toast.success(
+                    "Usuário cadastrado com sucesso! Um email de confirmação foi enviado para sua caixa de entrada.",
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined
+                    }
+                );
+                navigate("/");
+                setFetchingRegistration(false)
+            }
         } catch (err) {
             if (err.response.status === 401) {
                 toast.error(
@@ -135,10 +129,17 @@ function SignUp() {
 
     return (
         <div className="flex justify-center items-center bg-grey-50">
-            <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 p-28">
-                <div className="w-500 h-92 flex flex-col justify-center items-center my-10">
+            <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0 p-20">
+                <a href="https://www.uniftc.edu.br/" target="_blank" className="w-500 h-52 flex flex-col justify-center items-center" rel="noreferrer">
+                    <img className=" w-full items-center justify-center" src={uniFTC} alt="logo" />
+                </a>
+
+                <div className="w-500 h-92 flex flex-col justify-center items-center mt-10">
                     <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>
+
+
+
                 <Paper
                     variant="outlined"
                     square
@@ -157,7 +158,7 @@ function SignUp() {
                             onSubmit={handleSubmit(onSubmit)}
                         >
                             <Controller
-                                name="name"
+                                name="nome"
                                 control={control}
                                 render={({ field }) => (
                                     <TextField
@@ -166,50 +167,15 @@ function SignUp() {
                                         label="Nome"
                                         autoFocus
                                         type="text"
-                                        error={!!errors.name}
-                                        helperText={errors?.name?.message}
+                                        error={!!errors.nome}
+                                        helperText={errors?.nome?.message}
                                         variant="outlined"
                                         fullWidth
                                     />
                                 )}
                             />
 
-                            <div className="flex flex-row justify-between">
-                                <Controller
-                                    name="userRegistration"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            className="w-3/5 mb-24 mr-5 h-36"
-                                            label="Número de matricula"
-                                            type="text"
-                                            error={!!errors.userRegistration}
-                                            helperText={errors?.userRegistration?.message}
-                                            variant="outlined"
-                                            fullWidth
-                                        />
-                                    )}
-                                />
 
-                                <Controller
-                                    name="cdPerfilCad"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            className="w-2/5 mb-24 ml-5"
-                                            type="text"
-                                            error={!!errors.cdPerfilCad}
-                                            variant="outlined"
-                                            fullWidth
-                                        >
-                                            <MenuItem value="1">Aluno</MenuItem>
-                                            <MenuItem value="2">Professor</MenuItem>
-                                        </Select>
-                                    )}
-                                />
-                            </div>
 
                             <Controller
                                 name="email"
@@ -230,7 +196,7 @@ function SignUp() {
 
                             <div className="flex flex-row justify-between">
                                 <Controller
-                                    name="password"
+                                    name="senha"
                                     control={control}
                                     render={({ field }) => (
                                         <TextField
@@ -238,8 +204,8 @@ function SignUp() {
                                             className="mb-24 mr-5"
                                             label="Senha"
                                             type="password"
-                                            error={!!errors.password}
-                                            helperText={errors?.password?.message}
+                                            error={!!errors.senha}
+                                            helperText={errors?.senha?.message}
                                             variant="outlined"
                                             fullWidth
                                         />
@@ -260,6 +226,28 @@ function SignUp() {
                                             variant="outlined"
                                             fullWidth
                                         />
+                                    )}
+                                />
+                            </div>
+
+                            <div className="flex flex-row justify-start">
+                                <Controller
+                                    name="perfil"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            className="w-2/5 mb-24 "
+                                            type="text"
+
+                                            placeholder="Perfil"
+                                            error={!!errors.perfil}
+                                            variant="outlined"
+                                            fullWidth
+                                        >
+                                            <MenuItem value="aluno">Aluno</MenuItem>
+                                            <MenuItem value="professor">Professor</MenuItem>
+                                        </Select>
                                     )}
                                 />
                             </div>
@@ -300,6 +288,7 @@ function SignUp() {
                         </form>
                     </div>
                 </Paper>
+
             </div>
         </div>
     );

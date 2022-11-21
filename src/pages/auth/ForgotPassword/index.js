@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 
 import logo from "assets/logo.png";
+import uniFTC from "assets/Logo_UniFTC.png";
 import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
@@ -59,6 +60,9 @@ function ClassicForgotPasswordPage() {
     return (
         <div className=" h-screen flex justify-center items-center bg-grey-50">
             <div className="flex flex-col flex-auto items-center sm:justify-center min-w-0">
+                <a href="https://www.uniftc.edu.br/" target="_blank" className="w-500 h-52 flex flex-col justify-center items-center" rel="noreferrer">
+                    <img className=" w-full items-center justify-center" src={uniFTC} alt="logo" />
+                </a>
                 <div className="w-500 h-92 flex flex-col justify-center items-center my-16 ">
                     <img className=" w-full items-center justify-center" src={logo} alt="logo" />
                 </div>

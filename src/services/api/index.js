@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken } from "context/auth";
 
 const api = axios.create({
-    // baseURL: "https://link da api aqui/"
+    baseURL: "https://bsi-drive-api.herokuapp.com"
 });
 
 api.interceptors.request.use((config) => {
